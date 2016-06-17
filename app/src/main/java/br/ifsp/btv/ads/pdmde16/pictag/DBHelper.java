@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static final String NOME_BANCO ="pictag.db";
+    public static final String NOME_BANCO = "pictag.db";
     public static final Integer VERSAO_BANCO = 1;
 
     public static final String CREATE_TABLE_FOTO =
