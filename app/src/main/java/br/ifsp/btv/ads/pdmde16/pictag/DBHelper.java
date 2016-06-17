@@ -28,12 +28,9 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String DROP_TABLE_TAG =
             "DROP TABLE IF EXISTS TAG;";
 
-    public DBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
-    }
-
-    public DBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version, DatabaseErrorHandler errorHandler) {
-        super(context, name, factory, version, errorHandler);
+    public DBHelper(Context contexto)
+    {
+        super(contexto, NOME_BANCO, null, VERSAO_BANCO);
     }
 
     @Override
