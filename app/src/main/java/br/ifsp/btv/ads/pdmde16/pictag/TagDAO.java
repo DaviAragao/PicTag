@@ -37,14 +37,14 @@ public class TagDAO {
 
         List<String> tags = new ArrayList<String>();
 
-        while (cursor.moveToNext())
-            tags.add(cursor.getString(cursor.getColumnIndex("nome")));
+        if (cursor.moveToFirst())
+            while (cursor.moveToNext())
+                tags.add(cursor.getString(cursor.getColumnIndex("nome")));
 
         cursor.close();
         db.close();
         return tags;
     }
-
 
 }
 
