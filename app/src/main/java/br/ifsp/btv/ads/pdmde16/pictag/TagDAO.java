@@ -11,13 +11,11 @@ public class TagDAO {
     private DBHelper dbHelper;
     private SQLiteDatabase db;
 
-    public TagDAO(Context contexto)
-    {
+    public TagDAO(Context contexto) {
         dbHelper = new DBHelper(contexto);
     }
 
-    public void createTag(String nome)
-    {
+    public void createTag(String nome) {
         ContentValues tag = new ContentValues();
         db = dbHelper.getWritableDatabase();
 
@@ -26,6 +24,11 @@ public class TagDAO {
         db.insert("TAG", null, tag);
         db.close();
     }
+
+    public getAll(){
+
+    }
+
 
 }
 
