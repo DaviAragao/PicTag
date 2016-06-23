@@ -48,5 +48,33 @@ public class TagDAO {
         return tags;
     }
 
+    public String getById(int id){
+        String tag = null;
+        db = dbHelper.getReadableDatabase();
+        String select = "SELECT nome FROM TAG where nome ='"+ id +"';";
+        Cursor cursor = db.rawQuery(select, null);
+
+        if (cursor.moveToFirst())
+            tag = cursor.getString(cursor.getColumnIndex("nome"));
+
+        cursor.close();
+        db.close();
+        return tag;
+    }
+
+    public String getByName(String nome){
+        String tag = null;
+        db = dbHelper.getReadableDatabase();
+        String select = "SELECT nome FROM TAG where nome ='"+ nome +"';";
+        Cursor cursor = db.rawQuery(select, null);
+
+        if (cursor.moveToFirst())
+                tag = cursor.getString(cursor.getColumnIndex("nome"));
+
+        cursor.close();
+        db.close();
+        return tag;
+    }
+
 }
 
