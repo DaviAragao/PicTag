@@ -2,4 +2,5 @@
     <string name="app_name">PicTag</string>
     <string name="action_settings">Settings</string>
     <string name="salva_foto_pergunta">Esta foto é...</string>
+    <string name="titulo">Pic Tag</string>
 </resources>
