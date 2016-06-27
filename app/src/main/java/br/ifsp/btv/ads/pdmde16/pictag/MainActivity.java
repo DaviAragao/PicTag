@@ -34,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        tblTags = (TableLayout) findViewById(R.id.tblTags);
+
         TagDAO tDAO = new TagDAO(this);
         tDAO.createTag("#davi");
         tDAO.createTag("#aragao");
@@ -61,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
         Button btnTag2 = (Button) novaTag.findViewById(R.id.btnTag2);
         btnTag2.setText(tag2);
        // btnTag2.setOnClickListener(ouvidorTag2);
+
+        tblTags.addView(novaTag);
     }
 
     @Override
