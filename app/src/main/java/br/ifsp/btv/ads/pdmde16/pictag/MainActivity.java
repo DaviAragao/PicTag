@@ -1,8 +1,8 @@
 package br.ifsp.btv.ads.pdmde16.pictag;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -16,6 +16,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int NEW_PICTAG_REQUEST = 1;
+
     private TableLayout tblTags;
 
     @Override
@@ -26,13 +28,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        fab.setOnClickListener(ouvidorCamera);
 
         tblTags = (TableLayout) findViewById(R.id.tblTags);
 
@@ -83,5 +79,18 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    View.OnClickListener ouvidorCamera = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            startActivityForResult(new Intent(MainActivity.this, SaveActivity.class), NEW_PICTAG_REQUEST);
+        }
+    };
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        if (requestCode == NEW_PICTAG_REQUEST && resultCode == RESULT_OK) {
+            //ATUALIZAR LISTA DE TAGS
+        }
     }
 }

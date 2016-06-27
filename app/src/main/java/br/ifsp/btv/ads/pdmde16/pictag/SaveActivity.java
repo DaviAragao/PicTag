@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 
 public class SaveActivity extends AppCompatActivity {
 
@@ -43,15 +42,16 @@ public class SaveActivity extends AppCompatActivity {
             img.setScaleType(ImageView.ScaleType.FIT_XY);
             img.setImageBitmap(photo);
             // Chame este método pra obter a URI da imagem
-            Uri uri = getImageUri(getApplicationContext(), photo);
+            Uri uri = getImageUri(this, photo);
+
+            localFoto = uri.getPath();
             // Em seguida chame este método para obter o caminho do arquivo
-            File file = new File(getRealPathFromURI(uri));
+            //File file = new File(getRealPathFromURI(uri));
             mudarFoto = true; //controle de imagens
         }
     }
 
     public Uri getImageUri(Context inContext, Bitmap inImage) {
-
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         //Transforma o bitmap em jpeg
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
