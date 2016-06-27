@@ -51,8 +51,11 @@ public class SaveActivity extends AppCompatActivity {
     }
 
     public Uri getImageUri(Context inContext, Bitmap inImage) {
+
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        //Transforma o bitmap em jpeg
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        //Salva a imagem e retorna o caminho da imagem
         String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
         return Uri.parse(path);
     }

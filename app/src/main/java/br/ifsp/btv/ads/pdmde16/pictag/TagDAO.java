@@ -69,7 +69,7 @@ public class TagDAO {
         Cursor cursor = db.rawQuery(select, null);
 
         if (cursor.moveToFirst())
-                tag = cursor.getString(cursor.getColumnIndex("nome"));
+            tag = cursor.getString(cursor.getColumnIndex("nome"));
 
         cursor.close();
         db.close();
