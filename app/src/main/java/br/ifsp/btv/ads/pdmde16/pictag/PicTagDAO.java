@@ -8,29 +8,25 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-
-/**
- * Created by aluno on 16/06/16.
- */
-public class TagDAO {
+public class PicTagDAO {
     private DBHelper dbHelper;
     private SQLiteDatabase db;
 
-    public TagDAO(Context contexto) {
+    public PicTagDAO(Context contexto) {
         dbHelper = new DBHelper(contexto);
     }
 
     public void createTag(String nome) {
         ContentValues tag = new ContentValues();
-        db = dbHelper.getWritableDatabase();
 
         tag.put("nome", nome);
 
+        db = dbHelper.getWritableDatabase();
         db.insert("TAG", null, tag);
         db.close();
     }
 
-    public List<String> getAll(){
+    public List<String> getAllTags(){
         db = dbHelper.getReadableDatabase();
         String select = "SELECT nome FROM TAG;";
         Cursor cursor = db.rawQuery(select, null);
@@ -48,7 +44,7 @@ public class TagDAO {
         return tags;
     }
 
-    public String getById(int id){
+    public String getTagById(int id){
         String tag = null;
         db = dbHelper.getReadableDatabase();
         String select = "SELECT nome FROM TAG where nome ='"+ id +"';";
@@ -62,7 +58,7 @@ public class TagDAO {
         return tag;
     }
 
-    public String getByName(String nome){
+    public String getTagByName(String nome){
         String tag = null;
         db = dbHelper.getReadableDatabase();
         String select = "SELECT nome FROM TAG where nome ='"+ nome +"';";
@@ -74,6 +70,16 @@ public class TagDAO {
         cursor.close();
         db.close();
         return tag;
+    }
+
+    public void createPic(String caminho) {
+        ContentValues tag = new ContentValues();
+
+        tag.put("caminho", caminho);
+
+        db = dbHelper.getWritableDatabase();
+        db.insert("TAG", null, tag);
+        db.close();
     }
 
 }

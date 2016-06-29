@@ -8,27 +8,40 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.MultiAutoCompleteTextView;
 
 import java.io.ByteArrayOutputStream;
+import java.util.List;
 
 public class SaveActivity extends AppCompatActivity {
 
     private static final int REQUEST_FOTO = 1;
 
     private ImageView img;
-    private Bitmap bitmap;
+    private MultiAutoCompleteTextView tvTags;
+
     public String localFoto; //usado para armazenar o local onde se encontra a FOTO
-    public Boolean mudarFoto; //chavear imagem antiga e foto
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_save);
 
+        PicTagDAO dao = new PicTagDAO(this);
+
         img = (ImageView) findViewById(R.id.imageView);
+        tvTags = (MultiAutoCompleteTextView) findViewById(R.id.multiAutoTags);
 
         abrirCamera();
+
+        List<String> tags = dao.getAllTags();
+
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, tags);
+        tvTags.setAdapter(arrayAdapter);
+        tvTags.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+        tvTags.setThreshold(5);
     }
 
     public void abrirCamera(){
@@ -43,11 +56,8 @@ public class SaveActivity extends AppCompatActivity {
             img.setImageBitmap(photo);
             // Chame este método pra obter a URI da imagem
             Uri uri = getImageUri(this, photo);
-
-            localFoto = uri.getPath();
             // Em seguida chame este método para obter o caminho do arquivo
-            //File file = new File(getRealPathFromURI(uri));
-            mudarFoto = true; //controle de imagens
+            getRealPathFromURI(uri);
         }
     }
 
@@ -67,7 +77,4 @@ public class SaveActivity extends AppCompatActivity {
         localFoto = cursor.getString(idx);  //Armazena o local da imagem
         return localFoto;
     }
-
-    //private void
-
 }
