@@ -7,12 +7,15 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.MultiAutoCompleteTextView;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
 import java.util.List;
 
 public class SaveActivity extends AppCompatActivity {
@@ -21,6 +24,9 @@ public class SaveActivity extends AppCompatActivity {
 
     private ImageView img;
     private MultiAutoCompleteTextView tvTags;
+    private FloatingActionButton btnSave;
+
+    private PicTagDAO dao;
 
     public String localFoto; //usado para armazenar o local onde se encontra a FOTO
 
@@ -29,19 +35,22 @@ public class SaveActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_save);
 
-        PicTagDAO dao = new PicTagDAO(this);
+        dao = new PicTagDAO(this);
 
         img = (ImageView) findViewById(R.id.imageView);
         tvTags = (MultiAutoCompleteTextView) findViewById(R.id.multiAutoTags);
+        btnSave = (FloatingActionButton) findViewById(R.id.savePicFab);
+
+        btnSave.setOnClickListener(ouvidorSalvar);
 
         abrirCamera();
 
         List<String> tags = dao.getAllTags();
 
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, tags);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, tags);
         tvTags.setAdapter(arrayAdapter);
         tvTags.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
-        tvTags.setThreshold(5);
+        tvTags.setThreshold(1);
     }
 
     public void abrirCamera(){
@@ -77,4 +86,14 @@ public class SaveActivity extends AppCompatActivity {
         localFoto = cursor.getString(idx);  //Armazena o local da imagem
         return localFoto;
     }
+
+    View.OnClickListener ouvidorSalvar = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if ((!localFoto.isEmpty()) && (!tvTags.getText().toString().isEmpty())){
+                List<String> lstTags = Arrays.asList(tvTags.getText().toString().split("#\\w+"));
+                dao.createCompletePicTag(localFoto, lstTags);
+            }
+        }
+    };
 }

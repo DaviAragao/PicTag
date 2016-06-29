@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,13 +74,53 @@ public class PicTagDAO {
         return tag;
     }
 
-    public void createPic(String caminho) {
+    public void createPic(String caminho, SQLiteDatabase db) {
         ContentValues tag = new ContentValues();
 
         tag.put("caminho", caminho);
 
+        db.insert("FOTO", null, tag);
+    }
+
+    public void createPicTag(String caminhoPic, List<String> lstLags, SQLiteDatabase db){
+        StringBuilder stringBuilder = new StringBuilder();
+        int i = 0;
+
+        for (i = 0; i < lstLags.size(); i++)
+            stringBuilder.append("? ,");
+
+        String params = stringBuilder.toString();
+        params = params.substring(1, params.length()-3);
+
+        SQLiteStatement stmt = db.compileStatement("INSERT INTO FOTO_TAG (id_foto, id_tag) VALUES SELECT f.id, t.id FROM FOTO f, TAG t WHERE f.caminho = ?, t.nome in ("+params+");");
+        Log.d("DAO", stmt.simpleQueryForString());
+        stmt.bindString(1, caminhoPic);
+
+        i = 1;
+        for (String tag: lstLags)
+            stmt.bindString(i++, tag);
+
+        stmt.execute();
+    }
+
+    public void createTags(List<String> tags, SQLiteDatabase db) {
+        ContentValues cvTag = new ContentValues();
+
+        for (String tag: tags)
+            cvTag.put("nome", tag);
+
+        db.insert("TAG", null, cvTag);
+    }
+
+    public void createCompletePicTag(String caminhoPic, List<String> lstLags){
         db = dbHelper.getWritableDatabase();
-        db.insert("TAG", null, tag);
+        db.beginTransaction();
+
+        createTags(lstLags, db);
+        createPic(caminhoPic, db);
+        createPicTag(caminhoPic, lstLags, db);
+
+        db.endTransaction();
         db.close();
     }
 
