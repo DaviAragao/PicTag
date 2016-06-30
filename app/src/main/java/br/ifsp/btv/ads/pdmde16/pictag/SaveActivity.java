@@ -66,7 +66,7 @@ public class SaveActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         if (requestCode == REQUEST_FOTO && resultCode == RESULT_OK) {
             Bitmap photo = (Bitmap) data.getExtras().get("data");
-            img.setScaleType(ImageView.ScaleType.FIT_XY);
+            img.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             img.setImageBitmap(photo);
             // Chame este método pra obter a URI da imagem
             Uri uri = getImageUri(this, photo);

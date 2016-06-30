@@ -7,7 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PicTagDAO {
     private DBHelper dbHelper;
@@ -124,33 +126,38 @@ public class PicTagDAO {
         db.close();
     }
 
-    public void getPicTagsByTagName(String tag){
+    public Map<String, String> getPicTagsByTagName(String tag){
         db = dbHelper.getReadableDatabase();
 
-        Cursor cursor = db.rawQuery("SELECT * " +
+        Map<String, String> mapa = new HashMap<>();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT " +
+                    "f.caminho, GROUP_CONCAT(t.nome) as tags " +
                 "FROM " +
-                "FOTO f " +
+                    "FOTO f " +
                 "JOIN " +
-                "FOTO_TAG ft ON ft.id_foto = f.id " +
+                    "FOTO_TAG ft ON ft.id_foto = f.id " +
                 "JOIN " +
-                "TAG t ON t.id = ft.id_tag " +
+                    "TAG t ON t.id = ft.id_tag " +
                 "WHERE " +
-                "f.id IN " +
-                "(SELECT " +
-                "tf.id_foto " +
-                "FROM " +
-                "TAG t " +
-                "JOIN " +
-                "FOTO_TAG tf ON t.id = tf.id_tag " +
-                "WHERE " +
-                "t.nome = ?)", new String[]{tag});
+                    "f.id IN " +
+                        "(SELECT " +
+                            "tf.id_foto " +
+                        "FROM " +
+                            "TAG t " +
+                        "JOIN " +
+                            "FOTO_TAG tf ON t.id = tf.id_tag " +
+                        "WHERE " +
+                            "t.nome = ?)" +
+                "GROUP BY " +
+                    "f.id, f.caminho", new String[]{tag});
 
-        while (cursor.moveToNext()){
+        cursor.moveToFirst();
+        while (cursor.moveToNext())
+            mapa.put(cursor.getString(cursor.getColumnIndex("caminho")), cursor.getString(cursor.getColumnIndex("tags")));
 
-        }
-
-
-        //return null;
+        return mapa;
     }
 
 }
