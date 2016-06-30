@@ -42,9 +42,6 @@ public class MainActivity extends AppCompatActivity {
 
         lstTags = new ArrayList<>();
         dao = new PicTagDAO(this);
-        //dao.createTag("#davi");
-        //dao.createTag("#aragao");
-        //atualizarTags();
         criarTodasTags();
     }
 

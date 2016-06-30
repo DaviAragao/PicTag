@@ -12,6 +12,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.MultiAutoCompleteTextView;
@@ -57,6 +58,7 @@ public class SaveActivity extends AppCompatActivity {
         tvTags.setAdapter(arrayAdapter);
         tvTags.setThreshold(1);
         tvTags.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+        tvTags.setImeOptions(EditorInfo.IME_ACTION_DONE);
     }
 
     public void abrirCamera(){
