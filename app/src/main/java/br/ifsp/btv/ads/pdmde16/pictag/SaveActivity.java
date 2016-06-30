@@ -70,6 +70,8 @@ public class SaveActivity extends AppCompatActivity {
             img.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             img.setImageBitmap(photo);
             // Chame este método pra obter a URI da imagem
+            // Se tentarmos acesar um o path da URI teremos um caminho "virtual"
+            // por isto temos de chamar o método getRealPathFromURI
             Uri uri = getImageUri(this, photo);
             // Em seguida chame este método para obter o caminho do arquivo
             getRealPathFromURI(uri);
@@ -102,14 +104,18 @@ public class SaveActivity extends AppCompatActivity {
 
     private void salvarFoto(){
         if ((!localFoto.isEmpty()) && (!tvTags.getText().toString().isEmpty())){
+            //Cria um padrao de expressao regular
             Pattern p = Pattern.compile("#\\w+");
             Matcher m = p.matcher(tvTags.getText().toString());
 
             ArrayList<String> lstTags = new ArrayList<>();
 
+            //Enquanto encontrar o padrao definido na string
+            //Adiciona o texto encontrado a uma lista
             while (m.find())
                 lstTags.add(m.group());
 
+            //Se encontrou alguma palavra iniciando em #
             if (lstTags.size() > 0) {
                 dao.createCompletePicTag(localFoto, lstTags);
 
@@ -120,6 +126,7 @@ public class SaveActivity extends AppCompatActivity {
                 setResult(RESULT_OK, intentRetorno);
                 finish();
             }
+            //Exibe uma mensagem solicitando que utilize #
             else
                 Snackbar.make(coordLayout, "Utilize # para delimitar as hashtags", Snackbar.LENGTH_LONG).show();
         }

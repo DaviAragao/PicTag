@@ -23,15 +23,21 @@ public class FotosActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fotos);
 
+        //Busca pela tag passada por "parametro"
         tagDefault = getIntent().getExtras().getString("TAG_DEFAULT");
         dao = new PicTagDAO(this);
 
         tblPicTags = (TableLayout) findViewById(R.id.tblImageTag);
 
+        //Carrega a lista de imagens que contenham a tag passada por "parametro"
         carregaImagensTags();
     }
 
     private void carregaImagensTags(){
+        //Busca todas imagens, e uma string com as tags
+        //o DAO se encarrega de concatenar todas as tags
+        //em uma string, desta forma a Activity nao precisa
+        //utilizar estrutura de dados mais complexas como Map<String, List<String>>
         allPicTags = dao.getPicTagsByTagName(tagDefault);
 
         //Para cada par de imagem e string com tags

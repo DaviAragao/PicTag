@@ -84,27 +84,33 @@ public class MainActivity extends AppCompatActivity {
 
         //Se a última linha está com o segundo botão invisível
         if ((tblTags.getChildCount() > 0) && (tblTags.getChildAt(tblTags.getChildCount()-1).findViewById(R.id.btnTag2).getVisibility() == View.GONE)) {
+            //Pega última linha do table layout
             View tableRowAnt = tblTags.getChildAt(tblTags.getChildCount()-1);
 
+            //Ajusta o segundo botão
             Button btnTag2Ant = (Button) tableRowAnt.findViewById(R.id.btnTag2);
             btnTag2Ant.setText(tag1);
             btnTag2Ant.setVisibility(View.VISIBLE);
             btnTag2Ant.setOnClickListener(ouvidorBtnTag);
 
+            //Como a primeira tag já foi preenchida, então a primeira passa a ser a segunda.
             tag1 = tag2;
             tag2 = null;
         }
 
+        //Se ainda existir tag para preencher
         if (tag1 != null) {
+            //Infla uma nova row
             View novaTag = inflador.inflate(R.layout.layout_row_tag, null);
 
+            //Ajusta o primeiro botao
             Button btnTag1 = (Button) novaTag.findViewById(R.id.btnTag1);
             btnTag1.setText(tag1);
             btnTag1.setVisibility(View.VISIBLE);
             btnTag1.setOnClickListener(ouvidorBtnTag);
 
             Button btnTag2 = (Button) novaTag.findViewById(R.id.btnTag2);
-
+            //Se existir a segunda tag preenche, se nao deixa invisivel
             if (tag2 != null) {
                 btnTag2.setText(tag2);
                 btnTag2.setVisibility(View.VISIBLE);
@@ -113,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
             else
                 btnTag2.setVisibility(View.GONE);
 
+            //adiciona a row inflada ao tablelayout
             tblTags.addView(novaTag);
         }
     }
@@ -151,10 +158,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void tirarNovasFotos(){
+        //Dispara uma intent chamando a outra activity solicitando retorno
         if (havePermission())
             startActivityForResult(new Intent(MainActivity.this, SaveActivity.class), NEW_PICTAG_REQUEST);
     }
 
+    //No Android 6 é necessario solicitar permissoes em tempo de execucao e nao somente no manifesto como em outras versoes
     private boolean havePermission(){
         try {
             if ((ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
@@ -176,9 +185,11 @@ public class MainActivity extends AppCompatActivity {
     View.OnClickListener ouvidorBtnTag = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            //Pega o texto do botao
             Button btn = (Button) v;
             String tag = (String) btn.getText();
 
+            //Chama a outra activity passando o texto do botao como "parametro"
             Intent intent = new Intent(MainActivity.this, FotosActivity.class);
             intent.putExtra("TAG_DEFAULT", tag);
 
