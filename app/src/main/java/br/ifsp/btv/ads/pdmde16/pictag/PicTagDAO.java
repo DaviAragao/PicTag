@@ -124,9 +124,31 @@ public class PicTagDAO {
         db.close();
     }
 
-    public void getPicTagsByTagName(){
+    public void getPicTagsByTagName(String tag){
         db = dbHelper.getReadableDatabase();
-        SQLiteStatement stmt =  db.compileStatement("");
+
+        Cursor cursor = db.rawQuery("SELECT * " +
+                "FROM " +
+                "FOTO f " +
+                "JOIN " +
+                "FOTO_TAG ft ON ft.id_foto = f.id " +
+                "JOIN " +
+                "TAG t ON t.id = ft.id_tag " +
+                "WHERE " +
+                "f.id IN " +
+                "(SELECT " +
+                "tf.id_foto " +
+                "FROM " +
+                "TAG t " +
+                "JOIN " +
+                "FOTO_TAG tf ON t.id = tf.id_tag " +
+                "WHERE " +
+                "t.nome = ?)", new String[]{tag});
+
+        while (cursor.moveToNext()){
+
+        }
+
 
         //return null;
     }

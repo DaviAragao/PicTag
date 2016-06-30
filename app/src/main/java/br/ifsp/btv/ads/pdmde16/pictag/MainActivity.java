@@ -48,8 +48,8 @@ public class MainActivity extends AppCompatActivity {
         List<String> tags = tDAO.getAllTags();
 
         //index out of bounds...
-        for (int i = 0; i < tags.size(); i += 2)
-            criarTag(tags.get(i), tags.get(i + 1));
+        //for (int i = 0; i < tags.size(); i += 2)
+        //    criarTag(tags.get(i), tags.get(i + 1));
     }
 
     private void criarTag(String tag1, String tag2) {
@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         if (requestCode == NEW_PICTAG_REQUEST && resultCode == RESULT_OK) {
-            //
+            //Adiciona novas tags as na tela
         }
     }
 

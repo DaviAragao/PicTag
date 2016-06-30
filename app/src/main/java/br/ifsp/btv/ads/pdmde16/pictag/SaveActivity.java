@@ -113,7 +113,8 @@ public class SaveActivity extends AppCompatActivity {
                 dao.createCompletePicTag(localFoto, lstTags);
 
                 Intent intentRetorno = new Intent();
-                intentRetorno.getExtras().putStringArrayList("TAGS", lstTags);
+                //Adiciona lista de tags na intent
+                //intentRetorno.getExtras().putStringArrayList("TAGS", lstTags);
 
                 setResult(RESULT_OK, intentRetorno);
                 finish();
