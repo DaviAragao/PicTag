@@ -56,6 +56,7 @@ public class SaveActivity extends AppCompatActivity {
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, tags);
         tvTags.setAdapter(arrayAdapter);
         tvTags.setThreshold(1);
+        tvTags.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
     }
 
     public void abrirCamera(){
