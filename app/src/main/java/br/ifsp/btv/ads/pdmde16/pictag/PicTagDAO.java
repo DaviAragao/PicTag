@@ -99,8 +99,6 @@ public class PicTagDAO {
         for (String tag: lstLags)
             stmt.bindString(i++, tag);
 
-        //Log.d("DAO", stmt.simpleQueryForString());
-
         stmt.execute();
     }
 
@@ -122,6 +120,7 @@ public class PicTagDAO {
         createPicTag(caminhoPic, lstLags, db);
 
         db.setTransactionSuccessful();
+        db.endTransaction();
         db.close();
     }
 
