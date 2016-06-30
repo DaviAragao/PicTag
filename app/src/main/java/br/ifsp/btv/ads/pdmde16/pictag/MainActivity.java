@@ -10,7 +10,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -90,34 +89,36 @@ public class MainActivity extends AppCompatActivity {
     View.OnClickListener ouvidorCamera = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            try {
-                if ((ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
-                     ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
-
-                    Log.i("PicTag", "Solicitando permissão para escrever");
-                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
-
-                    //return;
-                }
-
-                if ((ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
-                     ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)){
-                    Log.i("PicTag", "Solicitando permissão para ler");
-                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-
-                }
-
-                startActivityForResult(new Intent(MainActivity.this, SaveActivity.class), NEW_PICTAG_REQUEST);
-            }
-            catch (Exception e){
-                Snackbar.make(tblTags, "Erro ao obter pemissão", Snackbar.LENGTH_LONG).show();
-            }
+            tirarNovasFotos();
         }
     };
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         if (requestCode == NEW_PICTAG_REQUEST && resultCode == RESULT_OK) {
-            //ATUALIZAR LISTA DE TAGS
+            //
+        }
+    }
+
+    private void tirarNovasFotos(){
+        if (havePermission())
+            startActivityForResult(new Intent(MainActivity.this, SaveActivity.class), NEW_PICTAG_REQUEST);
+    }
+
+    private boolean havePermission(){
+        try {
+            if ((ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                    ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED))
+                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+
+            if ((ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                    ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED))
+                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+
+            return true;
+        }
+        catch (Exception e){
+            Snackbar.make(tblTags, "Erro ao obter pemissão", Snackbar.LENGTH_LONG).show();
+            return false;
         }
     }
 }

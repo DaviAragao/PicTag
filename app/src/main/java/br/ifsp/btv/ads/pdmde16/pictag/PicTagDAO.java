@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,15 +89,17 @@ public class PicTagDAO {
             stringBuilder.append("? ,");
 
         String params = stringBuilder.toString();
-        params = params.substring(1, params.length()-3);
+        params = params.substring(0, params.length()-2);
 
-        SQLiteStatement stmt = db.compileStatement("INSERT INTO FOTO_TAG (id_foto, id_tag) VALUES SELECT f.id, t.id FROM FOTO f, TAG t WHERE f.caminho = ?, t.nome in ("+params+");");
-        Log.d("DAO", stmt.simpleQueryForString());
+        SQLiteStatement stmt = db.compileStatement("INSERT INTO FOTO_TAG (id_foto, id_tag) SELECT f.id, t.id FROM FOTO f, TAG t WHERE f.caminho = ? AND t.nome in ("+params+");");
+
         stmt.bindString(1, caminhoPic);
 
         i = 1;
         for (String tag: lstLags)
             stmt.bindString(i++, tag);
+
+        //Log.d("DAO", stmt.simpleQueryForString());
 
         stmt.execute();
     }
@@ -120,8 +121,15 @@ public class PicTagDAO {
         createPic(caminhoPic, db);
         createPicTag(caminhoPic, lstLags, db);
 
-        db.endTransaction();
+        db.setTransactionSuccessful();
         db.close();
+    }
+
+    public void getPicTagsByTagName(){
+        db = dbHelper.getReadableDatabase();
+        SQLiteStatement stmt =  db.compileStatement("");
+
+        //return null;
     }
 
 }

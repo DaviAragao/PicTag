@@ -7,7 +7,9 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -15,8 +17,10 @@ import android.widget.ImageView;
 import android.widget.MultiAutoCompleteTextView;
 
 import java.io.ByteArrayOutputStream;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SaveActivity extends AppCompatActivity {
 
@@ -25,6 +29,7 @@ public class SaveActivity extends AppCompatActivity {
     private ImageView img;
     private MultiAutoCompleteTextView tvTags;
     private FloatingActionButton btnSave;
+    private CoordinatorLayout coordLayout;
 
     private PicTagDAO dao;
 
@@ -40,6 +45,7 @@ public class SaveActivity extends AppCompatActivity {
         img = (ImageView) findViewById(R.id.imageView);
         tvTags = (MultiAutoCompleteTextView) findViewById(R.id.multiAutoTags);
         btnSave = (FloatingActionButton) findViewById(R.id.savePicFab);
+        coordLayout = (CoordinatorLayout) findViewById(R.id.coordLayoutSave);
 
         btnSave.setOnClickListener(ouvidorSalvar);
 
@@ -49,7 +55,6 @@ public class SaveActivity extends AppCompatActivity {
 
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, tags);
         tvTags.setAdapter(arrayAdapter);
-        tvTags.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
         tvTags.setThreshold(1);
     }
 
@@ -90,10 +95,31 @@ public class SaveActivity extends AppCompatActivity {
     View.OnClickListener ouvidorSalvar = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if ((!localFoto.isEmpty()) && (!tvTags.getText().toString().isEmpty())){
-                List<String> lstTags = Arrays.asList(tvTags.getText().toString().split("#\\w+"));
-                dao.createCompletePicTag(localFoto, lstTags);
-            }
+            salvarFoto();
         }
     };
+
+    private void salvarFoto(){
+        if ((!localFoto.isEmpty()) && (!tvTags.getText().toString().isEmpty())){
+            Pattern p = Pattern.compile("#\\w+");
+            Matcher m = p.matcher(tvTags.getText().toString());
+
+            ArrayList<String> lstTags = new ArrayList<>();
+
+            while (m.find())
+                lstTags.add(m.group());
+
+            if (lstTags.size() > 0) {
+                dao.createCompletePicTag(localFoto, lstTags);
+
+                Intent intentRetorno = new Intent();
+                intentRetorno.getExtras().putStringArrayList("TAGS", lstTags);
+
+                setResult(RESULT_OK, intentRetorno);
+                finish();
+            }
+            else
+                Snackbar.make(coordLayout, "Utilize # para delimitar as hashtags", Snackbar.LENGTH_LONG).show();
+        }
+    }
 }
