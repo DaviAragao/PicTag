@@ -21,11 +21,22 @@
         android:textSize="38sp"
         android:id="@+id/textView2" />
 
-    <TableLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/scrollView2"
         android:layout_below="@+id/textView2"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/tblTags"></TableLayout>
+        android:layout_alignParentStart="true">
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/textView2"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:id="@+id/tblTags"
+            android:stretchColumns="*"></TableLayout>
+    </ScrollView>
+
 </RelativeLayout>

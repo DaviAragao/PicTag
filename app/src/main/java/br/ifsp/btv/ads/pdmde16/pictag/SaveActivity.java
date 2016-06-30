@@ -114,7 +114,7 @@ public class SaveActivity extends AppCompatActivity {
 
                 Intent intentRetorno = new Intent();
                 //Adiciona lista de tags na intent
-                //intentRetorno.getExtras().putStringArrayList("TAGS", lstTags);
+                intentRetorno.putStringArrayListExtra("TAGS", lstTags);
 
                 setResult(RESULT_OK, intentRetorno);
                 finish();

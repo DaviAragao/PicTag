@@ -27,6 +27,8 @@ public class FotosActivity extends AppCompatActivity {
         dao = new PicTagDAO(this);
 
         tblPicTags = (TableLayout) findViewById(R.id.tblImageTag);
+
+        carregaImagensTags();
     }
 
     private void carregaImagensTags(){

@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TableLayout;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
     private static final int NEW_PICTAG_REQUEST = 1;
 
     private TableLayout tblTags;
+    private PicTagDAO dao;
+    private List<String> lstTags;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,33 +40,60 @@ public class MainActivity extends AppCompatActivity {
 
         tblTags = (TableLayout) findViewById(R.id.tblTags);
 
-        PicTagDAO tDAO = new PicTagDAO(this);
-        tDAO.createTag("#davi");
-        tDAO.createTag("#aragao");
-        atualizarTags();
+        lstTags = new ArrayList<>();
+        dao = new PicTagDAO(this);
+        //dao.createTag("#davi");
+        //dao.createTag("#aragao");
+        //atualizarTags();
+        criarTodasTags();
     }
 
-    private void atualizarTags() {
-        PicTagDAO tDAO = new PicTagDAO(getApplicationContext());
-        List<String> tags = tDAO.getAllTags();
+    private void criarTodasTags(){
+        List<String> todasTags = dao.getAllTags();
 
-        //index out of bounds...
-        //for (int i = 0; i < tags.size(); i += 2)
-        //    criarTag(tags.get(i), tags.get(i + 1));
+        //Este método já
+        atualizarTags(todasTags);
     }
 
-    private void criarTag(String tag1, String tag2) {
+    //Método responsável por receber uma lista de tags
+    //e adiciona um botao para esta lista de tags se necessario
+    private void atualizarTags(List<String> tagsNovas) {
+        List<String> tagsAdicionadas = new ArrayList<>();
+
+        //Faz um laço nas tags recebidas
+        for (String tag: tagsNovas){
+            //Verifica se a tag nova deve ser adicionada e se esta tag já não será adicionada
+            if ((lstTags.indexOf(tag) == -1) && (tagsAdicionadas.indexOf(tag) == -1)){
+                tagsAdicionadas.add(tag);
+            }
+        }
+
+        for (int i = 0; i < tagsAdicionadas.size(); i += 2) {
+            //Se a posicao i+1 = size entao a posicao i+1 nao existe na lista
+            if (tagsAdicionadas.size() == i+1)
+                criarTags(tagsAdicionadas.get(i), null);
+            else
+                criarTags(tagsAdicionadas.get(i), tagsAdicionadas.get(i + 1));
+        }
+    }
+
+    private void criarTags(String tag1, String tag2) {
         LayoutInflater inflador = getLayoutInflater();
 
-        View novaTag = inflador.inflate(R.layout.layout_tag, null);
+        View novaTag = inflador.inflate(R.layout.layout_row_tag, null);
 
         Button btnTag1 = (Button) novaTag.findViewById(R.id.btnTag1);
         btnTag1.setText(tag1);
-        //btnTag1.setOnClickListener(ouvidorTag1);
+        btnTag1.setOnClickListener(ouvidorBtnTag);
 
         Button btnTag2 = (Button) novaTag.findViewById(R.id.btnTag2);
-        btnTag2.setText(tag2);
-       // btnTag2.setOnClickListener(ouvidorTag2);
+        if (tag2 != null) {
+            btnTag2.setText(tag2);
+            btnTag2.setOnClickListener(ouvidorBtnTag);
+        }
+        else{
+            btnTag2.setVisibility(View.GONE);
+        }
 
         tblTags.addView(novaTag);
     }
@@ -95,7 +125,9 @@ public class MainActivity extends AppCompatActivity {
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         if (requestCode == NEW_PICTAG_REQUEST && resultCode == RESULT_OK) {
-            //Adiciona novas tags as na tela
+            List<String> tagsFotoNova = getIntent().getExtras().getStringArrayList("TAGS");
+
+            atualizarTags(tagsFotoNova);
         }
     }
 
@@ -121,4 +153,17 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
     }
+
+    View.OnClickListener ouvidorBtnTag = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Button btn = (Button) v;
+            String tag = (String) btn.getText();
+
+            Intent intent = new Intent(MainActivity.this, FotosActivity.class);
+            intent.putExtra("TAG_DEFAULT", tag);
+
+            startActivity(intent);
+        }
+    };
 }
