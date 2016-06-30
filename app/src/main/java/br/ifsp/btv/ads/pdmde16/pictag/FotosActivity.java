@@ -47,7 +47,7 @@ public class FotosActivity extends AppCompatActivity {
 
         //Infla um layout contendo o imageview para exibir a foto
         // e um text view para exibir as tags
-        TableRow rowNova = (TableRow) inflador.inflate(R.layout.layout_tag, null);
+        TableRow rowNova = (TableRow) inflador.inflate(R.layout.layout_foto_tags, null);
 
         //Encontra o imageview no layout inflado
         ImageView imgPic = (ImageView) rowNova.findViewById(R.id.imgPic);

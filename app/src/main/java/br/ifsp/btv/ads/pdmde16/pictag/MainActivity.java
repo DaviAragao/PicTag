@@ -68,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        lstTags.addAll(tagsAdicionadas);
+
         for (int i = 0; i < tagsAdicionadas.size(); i += 2) {
             //Se a posicao i+1 = size entao a posicao i+1 nao existe na lista
             if (tagsAdicionadas.size() == i+1)
@@ -80,22 +82,39 @@ public class MainActivity extends AppCompatActivity {
     private void criarTags(String tag1, String tag2) {
         LayoutInflater inflador = getLayoutInflater();
 
-        View novaTag = inflador.inflate(R.layout.layout_row_tag, null);
+        //Se a última linha está com o segundo botão invisível
+        if ((tblTags.getChildCount() > 0) && (tblTags.getChildAt(tblTags.getChildCount()-1).findViewById(R.id.btnTag2).getVisibility() == View.GONE)) {
+            View tableRowAnt = tblTags.getChildAt(tblTags.getChildCount()-1);
 
-        Button btnTag1 = (Button) novaTag.findViewById(R.id.btnTag1);
-        btnTag1.setText(tag1);
-        btnTag1.setOnClickListener(ouvidorBtnTag);
+            Button btnTag2Ant = (Button) tableRowAnt.findViewById(R.id.btnTag2);
+            btnTag2Ant.setText(tag1);
+            btnTag2Ant.setVisibility(View.VISIBLE);
+            btnTag2Ant.setOnClickListener(ouvidorBtnTag);
 
-        Button btnTag2 = (Button) novaTag.findViewById(R.id.btnTag2);
-        if (tag2 != null) {
-            btnTag2.setText(tag2);
-            btnTag2.setOnClickListener(ouvidorBtnTag);
-        }
-        else{
-            btnTag2.setVisibility(View.GONE);
+            tag1 = tag2;
+            tag2 = null;
         }
 
-        tblTags.addView(novaTag);
+        if (tag1 != null) {
+            View novaTag = inflador.inflate(R.layout.layout_row_tag, null);
+
+            Button btnTag1 = (Button) novaTag.findViewById(R.id.btnTag1);
+            btnTag1.setText(tag1);
+            btnTag1.setVisibility(View.VISIBLE);
+            btnTag1.setOnClickListener(ouvidorBtnTag);
+
+            Button btnTag2 = (Button) novaTag.findViewById(R.id.btnTag2);
+
+            if (tag2 != null) {
+                btnTag2.setText(tag2);
+                btnTag2.setVisibility(View.VISIBLE);
+                btnTag2.setOnClickListener(ouvidorBtnTag);
+            }
+            else
+                btnTag2.setVisibility(View.GONE);
+
+            tblTags.addView(novaTag);
+        }
     }
 
     @Override
@@ -125,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         if (requestCode == NEW_PICTAG_REQUEST && resultCode == RESULT_OK) {
-            List<String> tagsFotoNova = getIntent().getExtras().getStringArrayList("TAGS");
+            List<String> tagsFotoNova = data.getExtras().getStringArrayList("TAGS");
 
             atualizarTags(tagsFotoNova);
         }

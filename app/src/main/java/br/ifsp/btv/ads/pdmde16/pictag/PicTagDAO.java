@@ -5,9 +5,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
+import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -98,19 +99,21 @@ public class PicTagDAO {
         stmt.bindString(1, caminhoPic);
 
         i = 1;
-        for (String tag: lstLags)
-            stmt.bindString(i++, tag);
+        for (String tag: lstLags) {
+            i++;
+            stmt.bindString(i, tag);
+        }
 
-        stmt.execute();
+        stmt.executeInsert();
     }
 
     public void createTags(List<String> tags, SQLiteDatabase db) {
         ContentValues cvTag = new ContentValues();
 
-        for (String tag: tags)
+        for (String tag: tags){
             cvTag.put("nome", tag);
-
-        db.insert("TAG", null, cvTag);
+            db.insert("TAG", null, cvTag);
+        }
     }
 
     public void createCompletePicTag(String caminhoPic, List<String> lstLags){
@@ -129,7 +132,7 @@ public class PicTagDAO {
     public Map<String, String> getPicTagsByTagName(String tag){
         db = dbHelper.getReadableDatabase();
 
-        Map<String, String> mapa = new HashMap<>();
+        Map<String, String> mapa = new LinkedHashMap<>();
 
         Cursor cursor = db.rawQuery(
                 "SELECT " +
@@ -153,9 +156,18 @@ public class PicTagDAO {
                 "GROUP BY " +
                     "f.id, f.caminho", new String[]{tag});
 
-        cursor.moveToFirst();
-        while (cursor.moveToNext())
-            mapa.put(cursor.getString(cursor.getColumnIndex("caminho")), cursor.getString(cursor.getColumnIndex("tags")));
+        String caminho, tagfoto;
+
+        //cursor.moveToFirst();
+        while (cursor.moveToNext()) {
+            caminho = cursor.getString(cursor.getColumnIndex("caminho"));
+            tagfoto = cursor.getString(cursor.getColumnIndex("tags"));
+
+            Log.i("TAG_TESTE", caminho);
+            Log.i("TAG_TESTE", tagfoto);
+
+            mapa.put(caminho, tagfoto);
+        }
 
         return mapa;
     }
